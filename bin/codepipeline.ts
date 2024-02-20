@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import { CodepipelineStack } from '../lib/codepipeline-stack';
 
 const app = new cdk.App();
+const myaws = { account: app.node.tryGetContext("accountNumber"), region: app.node.tryGetContext("region") };
 new CodepipelineStack(app, 'CodepipelineStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
@@ -15,7 +16,8 @@ new CodepipelineStack(app, 'CodepipelineStack', {
 
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+  env: myaws,
+  description:"stack for cicd",
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
