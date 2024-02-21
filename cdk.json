@@ -1,6 +1,6 @@
 {
   "app": "npx ts-node --prefer-ts-exts bin/codepipeline.ts",
-  "profile": "test",
+  "profile": "karthick",
   "requireApproval": "never",
   "watch": {
     "include": [
@@ -67,10 +67,14 @@
     "mailId":[
       "test@gmail.com"
     ],
-    "accountNumber":"123456789",
+    "accountNumber":"123455",
     "region":"us-east-1",
     "repo":"hello-world",
     "branch":"master",
-    "bucketName":"codepipeline-us-east-1-123456789"
+    "bucketName":"codepipeline-us-east-1-12345",
+    "codebuildroleARN":"arn:aws:iam::12345:role/service-role/codebuild-cdk-pipeline-test-build-service-role",
+    "pipelineroleARN":"arn:aws:iam::123456t:role/service-role/AWSCodePipelineServiceRole-us-east-1-demo-feb4",
+    "topicARN":"arn:aws:sns:us-east-1:12345:mymailsns",
+    "deploymentbucketName":"codepipeline-us-east-1-12345"
   }
 }

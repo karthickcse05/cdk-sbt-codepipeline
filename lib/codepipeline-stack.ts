@@ -5,10 +5,10 @@ import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
-import { Effect, Policy, PolicyStatement, Role } from 'aws-cdk-lib/aws-iam';
+//import { Effect, Policy, PolicyStatement, Role } from 'aws-cdk-lib/aws-iam';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as sns from 'aws-cdk-lib/aws-sns';
-import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
+//import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as codedeploy from 'aws-cdk-lib/aws-codedeploy';
 
 export class CodepipelineStack extends cdk.Stack {
@@ -35,14 +35,21 @@ export class CodepipelineStack extends cdk.Stack {
         /* existing bucket */
         const pipelineArtifactBucket = s3.Bucket.fromBucketName(this,
             "PipelineArtificatBucket",
-            "codepipeline-us-east-1-6186353439375")
+            this.node.tryGetContext("bucketName"))
 
         /* SNS for Approval */
-        const topic = new sns.Topic(this, 'sns-topic', {
-            displayName: 'My SNS topic',
-        });
 
-        topic.addSubscription(new subs.EmailSubscription("karthickcse05@gmail.com"));
+        /* new Topic  creation */
+        // const topic = new sns.Topic(this, 'sns-topic', {
+        //     displayName: 'My SNS topic',
+        // });
+
+        //topic.addSubscription(new subs.EmailSubscription("karthickcse05@gmail.com"));
+        
+        /* existing topic */
+        const topic = sns.Topic.fromTopicArn(this, "mysnstopic", this.node.tryGetContext("topicARN"))
+
+        
 
         /* Code deploy for deployment */
         const application = new codedeploy.ServerApplication(this, 'CodeDeployApplication', {
@@ -72,53 +79,46 @@ export class CodepipelineStack extends cdk.Stack {
             };
         }
 
-        const codeBuildExecutionRole = new iam.Role(this, "codebuildrole", {
-            assumedBy: new iam.ServicePrincipal("codebuild.amazonaws.com"),
-            roleName:appName + "codebuild-role",
-          });
-      
-          codeBuildExecutionRole.addToPolicy(new iam.PolicyStatement({
-            effect:iam.Effect.ALLOW,
-            actions:["*"],
-            resources:["*"]
-          }))
+        
+
+         /* new IAM role creation */
+        // const codeBuildExecutionRole = new iam.Role(this, "codebuildrole", {
+        //     assumedBy: new iam.ServicePrincipal("codebuild.amazonaws.com"),
+        //     roleName:appName + "codebuild-role",
+        //   });
+
+        //   codeBuildExecutionRole.addToPolicy(new iam.PolicyStatement({
+        //     effect:iam.Effect.ALLOW,
+        //     actions:["*"],
+        //     resources:["*"]
+        //   }))
+
+        /* existing IAM role */
+        const codeBuildExecutionRole = iam.Role.fromRoleArn(this, "codebuildiamrole", this.node.tryGetContext("codebuildroleARN"));
 
         /* Build  */
         const code_build_project = new codebuild.PipelineProject(this, 'CodeBuild', {
             description: "build the  project",
             projectName: "SBT-Build",
-            role:codeBuildExecutionRole,
+            role: codeBuildExecutionRole,
             environment: {
                 privileged: true,
                 computeType: codebuild.ComputeType.MEDIUM,
-                buildImage: codebuild.LinuxBuildImage.STANDARD_7_0
+                buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
             },
             timeout: cdk.Duration.minutes(15),
-            environmentVariables: getEnvironmentVariables()
+            environmentVariables: getEnvironmentVariables(),
+            buildSpec: codebuild.BuildSpec.fromSourceFilename("cdk/buildspec.yml")  // buildspec file from different folder.
+            //if we didnt give this property , it will take the buildpsec file from the root of the repo.
         });
 
-        // code_build_project.role?.attachInlinePolicy(
-        //     new Policy(this, "CodeBuildPolicy", {
-        //         statements: [
-        //             new PolicyStatement({
-        //                 effect: Effect.ALLOW,
-        //                 resources: ["*"],
-        //                 actions: ["sts:*"],
-        //                 conditions: {
-        //                     "StringEquals": {
-        //                         "sts:AWSServiceName": "codeartifact.amazonaws.com"
-        //                     }
-        //                 }
-        //             }),
-        //         ]
-        //     })
-        // );
+       
 
         /* Unit Test  */
         const code_build_unit_test_project = new codebuild.PipelineProject(this, 'UnitTest', {
             description: "unit test the sbt project",
             projectName: "Unit-Test-SBT",
-            role:codeBuildExecutionRole,
+            role: codeBuildExecutionRole,
             environment: {
                 privileged: true,
                 computeType: codebuild.ComputeType.MEDIUM,
@@ -128,40 +128,29 @@ export class CodepipelineStack extends cdk.Stack {
             environmentVariables: getEnvironmentVariables(),
         });
 
-        // code_build_unit_test_project.role?.attachInlinePolicy(
-        //     new Policy(this, "RunUnitTestsPolicy", {
-        //         statements: [
-        //             new PolicyStatement({
-        //                 effect: Effect.ALLOW,
-        //                 resources: ["*"],
-        //                 actions: ["sts:*"],
-        //                 conditions: {
-        //                     "StringEquals": {
-        //                         "sts:AWSServiceName": "codeartifact.amazonaws.com"
-        //                     }
-        //                 }
-        //             }),
-        //         ]
-        //     })
-        // );
+        
 
 
         const sourceOutput = new codepipeline.Artifact();
         const cdkBuildOutput = new codepipeline.Artifact('CdkBuildOutput');
 
-        const pipelineExecutionRole = new iam.Role(this, "pipelinerole", {
-            assumedBy: new iam.ServicePrincipal("codepipeline.amazonaws.com"),
-            roleName: appName + "codepipeline-role",
-        });
+        /* new IAM role creation */
+        // const pipelineExecutionRole = new iam.Role(this, "pipelinerole", {
+        //     assumedBy: new iam.ServicePrincipal("codepipeline.amazonaws.com"),
+        //     roleName: appName + "codepipeline-role",
+        // });
 
-        pipelineExecutionRole.addToPolicy(new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ["*"],
-            resources: ["*"]
-        }))
+        // pipelineExecutionRole.addToPolicy(new iam.PolicyStatement({
+        //     effect: iam.Effect.ALLOW,
+        //     actions: ["*"],
+        //     resources: ["*"]
+        // }))
+
+        /* existing IAM role */
+        const pipelineExecutionRole = iam.Role.fromRoleArn(this, "pipelineiamrole", this.node.tryGetContext("pipelineroleARN"));
 
         new codepipeline.Pipeline(this, 'MyPipeline', {
-            pipelineName: "MyTestPipeline",
+            pipelineName: appName + "MyTestPipeline",
             artifactBucket: pipelineArtifactBucket,
             role: pipelineExecutionRole,
             stages: [
@@ -208,10 +197,21 @@ export class CodepipelineStack extends cdk.Stack {
                     ],
                 },
                 {
-                    stageName: 'Deploy',
+                    stageName: 'DeployToS3',
+                    actions: [
+                        new codepipeline_actions.S3DeployAction({
+                            actionName: 'DeployToS3',
+                            input: cdkBuildOutput,
+                            bucket: s3.Bucket.fromBucketName(this, 'DeployBucket', this.node.tryGetContext("deploymentbucketName")), 
+
+                        }),
+                    ],
+                },
+                {
+                    stageName: 'DeployToEC2',
                     actions: [
                         new codepipeline_actions.CodeDeployServerDeployAction({
-                            actionName: 'CodeDeploy',
+                            actionName: 'DeployToEC2',
                             input: cdkBuildOutput,
                             deploymentGroup,
                         }),
