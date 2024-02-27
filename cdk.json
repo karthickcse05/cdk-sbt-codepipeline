@@ -75,6 +75,7 @@
     "codebuildroleARN":"arn:aws:iam::12345:role/service-role/codebuild-cdk-pipeline-test-build-service-role",
     "pipelineroleARN":"arn:aws:iam::123456t:role/service-role/AWSCodePipelineServiceRole-us-east-1-demo-feb4",
     "topicARN":"arn:aws:sns:us-east-1:12345:mymailsns",
-    "deploymentbucketName":"codepipeline-us-east-1-12345"
+    "deploymentbucketName":"codepipeline-us-east-1-12345",
+    "lambdaroleARN":"arn:aws:iam::123456:role/service-role/test-lambda-role-8ke13f3t"
   }
 }
