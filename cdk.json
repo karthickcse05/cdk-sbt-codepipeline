@@ -67,15 +67,21 @@
     "mailId":[
       "test@gmail.com"
     ],
-    "accountNumber":"123455",
+    "accountNumber":"1234",
     "region":"us-east-1",
     "repo":"hello-world",
     "branch":"master",
-    "bucketName":"codepipeline-us-east-1-12345",
+    "bucketName":"bucket-test-mar28-2023-1",
     "codebuildroleARN":"arn:aws:iam::12345:role/service-role/codebuild-cdk-pipeline-test-build-service-role",
     "pipelineroleARN":"arn:aws:iam::123456t:role/service-role/AWSCodePipelineServiceRole-us-east-1-demo-feb4",
     "topicARN":"arn:aws:sns:us-east-1:12345:mymailsns",
     "deploymentbucketName":"codepipeline-us-east-1-12345",
-    "lambdaroleARN":"arn:aws:iam::123456:role/service-role/test-lambda-role-8ke13f3t"
+    "lambdaroleARN":"arn:aws:iam::1234:role/service-role/AmazonSageMakerServiceCatalogProductsLambdaRole",
+    "roleARN":"arn:aws:iam::1234:role/s3-role-lambda",
+    "owner":"testing",
+    "env":"dev",
+    "org":"test",
+    "logbucketName":"tranedatabasebackup",
+    "purpose":"datacopy"
   }
 }

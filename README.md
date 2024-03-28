@@ -14,4 +14,5 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npx cdk synth`   emits the synthesized CloudFormation template
 * `npx cdk bootstrap --profile karthick` 
 * `npx cdk deploy --profile karthick --require-approval never`
+* `npx cdk deploy S3Stack --profile karthick --require-approval never`
 * `npx cdk destroy`

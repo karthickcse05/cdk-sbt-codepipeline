@@ -1,8 +1,10 @@
 import { IManagedPolicy, IRole, Role } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import {Function}from "aws-cdk-lib/aws-lambda";
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { Code } from "aws-cdk-lib/aws-lambda";
+
 
 export interface LambdaProps {
   readonly lambdaName: string;
@@ -29,7 +31,7 @@ export class BaseLambda extends Construct {
   constructor(scope: Construct, id: string, props: LambdaProps) {
     super(scope, id);
 
-    const lambdaFunction = new lambda.Function(this, props.lambdaName, {
+    this.function = new Function(this, props.lambdaName, {
       functionName: props.lambdaName,
       description: props.lambdaDescription,
       code: Code.fromAsset(props.lambdaPath),
@@ -42,7 +44,7 @@ export class BaseLambda extends Construct {
     });
 
     new CfnOutput(this, "lambdaarn", {
-      value: lambdaFunction.functionArn,
+      value: this.function.functionArn,
       description: "The arn of the lambda",
       exportName: props.lambdaName + "lambda-arn",
     });
