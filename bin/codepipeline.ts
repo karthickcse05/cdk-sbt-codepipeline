@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { CodepipelineStack } from '../lib/codepipeline-stack';
 import { S3Stack } from '../lib/s3-stack';
+import { EMRStack } from '../lib/emr-stack';
 import { Tags } from 'aws-cdk-lib';
 
 const app = new cdk.App();
@@ -32,3 +33,8 @@ Tags.of(s3_stack).add("account", app.node.tryGetContext("accountNumber"));
 Tags.of(s3_stack).add("region", app.node.tryGetContext("region"));
 Tags.of(s3_stack).add("env", app.node.tryGetContext("env"));
 Tags.of(s3_stack).add("org", app.node.tryGetContext("org"));
+
+new EMRStack(app, 'EMRStack', {
+  env: myaws,
+  description:"stack for emr cluster creation",
+});

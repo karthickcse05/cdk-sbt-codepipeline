@@ -67,21 +67,30 @@
     "mailId":[
       "test@gmail.com"
     ],
-    "accountNumber":"1234",
+    "accountNumber":"123456",
     "region":"us-east-1",
     "repo":"hello-world",
     "branch":"master",
-    "bucketName":"bucket-test-mar28-2023-1",
+    "bucketName":"bucket-test-mar29-2024-1",
     "codebuildroleARN":"arn:aws:iam::12345:role/service-role/codebuild-cdk-pipeline-test-build-service-role",
     "pipelineroleARN":"arn:aws:iam::123456t:role/service-role/AWSCodePipelineServiceRole-us-east-1-demo-feb4",
     "topicARN":"arn:aws:sns:us-east-1:12345:mymailsns",
     "deploymentbucketName":"codepipeline-us-east-1-12345",
-    "lambdaroleARN":"arn:aws:iam::1234:role/service-role/AmazonSageMakerServiceCatalogProductsLambdaRole",
-    "roleARN":"arn:aws:iam::1234:role/s3-role-lambda",
+    "lambdaroleARN":"arn:aws:iam::12345:role/service-role/AmazonSageMakerServiceCatalogProductsLambdaRole",
+    "roleARN":"arn:aws:iam::12345:role/s3-role-lambda",
     "owner":"testing",
     "env":"dev",
     "org":"test",
-    "logbucketName":"tranedatabasebackup",
-    "purpose":"datacopy"
+    "logbucketName":"bacnet-sc",
+    "purpose":"datacopy",
+    "emr-release-label":"emr-7.0.0",
+    "emr-cluster-name":"test-cluster",
+    "ec2KeyPairName":"test-apr03-2024",
+    "emr_job_flow_role_name":"emr_flow_role",
+    "emr_service_role_name":"emr_service_role",
+    "ec2SubnetId":"subnet-416c844e",
+    "master_instance_type":"c4.large",
+    "slave_instance_type":"c4.large",
+    "availability_zone":"us-east-1f"
   }
 }

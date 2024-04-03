@@ -13,6 +13,7 @@ import * as codedeploy from "aws-cdk-lib/aws-codedeploy";
 import { BaseLambda } from "./constructs/baseLambda";
 import path = require("path");
 import { Runtime } from "aws-cdk-lib/aws-lambda";
+import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
 
 export class CodepipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -26,6 +27,14 @@ export class CodepipelineStack extends cdk.Stack {
       "CodeCommitRepo",
       this.node.tryGetContext("repo")
     );
+
+    const pipeline = new CodePipeline(this, 'Pipeline', {
+      pipelineName: 'MyPipeline',
+      synth: new ShellStep('Synth', {
+        input: CodePipelineSource.gitHub('OWNER/REPO', 'main'),
+        commands: ['npm ci', 'npm run build', 'npx cdk synth']
+      })
+    });
 
     /* S3 bucket for artificat */
 

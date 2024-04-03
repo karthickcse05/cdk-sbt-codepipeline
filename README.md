@@ -16,3 +16,5 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npx cdk deploy --profile karthick --require-approval never`
 * `npx cdk deploy S3Stack --profile karthick --require-approval never`
 * `npx cdk destroy`
+
+* `aws ec2 describe-instance-type-offerings --location-type "availability-zone" --filters Name=location,Values=us-east-1f --region us-east-1 --profile test --query "InstanceTypeOfferings[*].[InstanceType]" --output text | sort`
